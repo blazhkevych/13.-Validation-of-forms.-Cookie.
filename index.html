@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Form Elements</title>
+	<style>
+		body {
+			font: 10pt Tahoma;
+		}
+
+		table.formHolder {
+			font: 10pt Tahoma;
+			background-color: #ddeeff;
+		}
+
+		table.formHolder thead {
+			background-color: #334466;
+			color: white;
+			font-weight: bold;
+		}
+	</style>
+	<script>
+		// Function to validate the form data
+		function validateForm() {
+			var username = document.forms["form1"]["username"].value;
+			var password = document.forms["form1"]["password"].value;
+			var confirmPassword = document.forms["form1"]["confirmPassword"].value;
+
+			// Perform validation checks
+			if (username === "") {
+				alert("Username is required.");
+				return false;
+			}
+
+			if (password === "") {
+				alert("Password is required.");
+				return false;
+			}
+
+			if (confirmPassword === "") {
+				alert("Confirmation password is required.");
+				return false;
+			}
+
+			if (password !== confirmPassword) {
+				alert("Password and confirmation password do not match.");
+				return false;
+			}
+
+			// Store form data in cookies
+			document.cookie = "username=" + username;
+			document.cookie = "password=" + password;
+			document.cookie = "fullname=" + document.forms["form1"]["fullname"].value;
+			document.cookie = "gender=" + document.querySelector('input[name="gender"]:checked').value;
+
+			var languages = document.querySelectorAll('input[name="languages[]"]:checked');
+			var languagesValues = Array.from(languages).map(function (checkbox) {
+				return checkbox.value;
+			});
+			document.cookie = "languages=" + languagesValues.join(",");
+
+			document.cookie = "fieldOfWork=" + document.forms["form1"]["fieldOfWork"].value;
+			document.cookie = "email=" + document.forms["form1"]["email"].value;
+			document.cookie = "additionalInfo=" + document.forms["form1"]["additionalInfo"].value;
+
+			return true;
+		}
+
+		// Function to populate form with data from cookie on page load
+		function populateForm() {
+			var cookies = document.cookie.split(";");
+
+			for (var i = 0; i < cookies.length; i++) {
+				var cookie = cookies[i].trim().split("=");
+				var name = cookie[0];
+				var value = cookie[1];
+
+				if (name === "username") {
+					document.forms["form1"]["username"].value = value;
+				} else if (name === "password") {
+					document.forms["form1"]["password"].value = value;
+					document.forms["form1"]["confirmPassword"].value = value;
+				} else if (name === "fullname") {
+					document.forms["form1"]["fullname"].value = value;
+				} else if (name === "gender") {
+					document.querySelector('input[name="gender"][value="' + value + '"]').checked = true;
+				} else if (name === "languages") {
+					var languages = value.split(",");
+					languages.forEach(function (language) {
+						document.querySelector('input[name="languages[]"][value="' + language + '"]').checked = true;
+					});
+				} else if (name === "fieldOfWork") {
+					document.forms["form1"]["fieldOfWork"].value = value;
+				} else if (name === "email") {
+					document.forms["form1"]["email"].value = value;
+				} else if (name === "additionalInfo") {
+					document.forms["form1"]["additionalInfo"].value = value;
+				}
+			}
+		}
+	</script>
+</head>
+
+<body onload="populateForm()">
+	<form name="form1" method="POST" onsubmit="return validateForm()">
+		<table class="formHolder" cellspacing="1">
+			<thead>
+				<tr>
+					<th colspan="2" align="center">Server Registration:</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Username -->
+				<tr>
+					<td>Username:</td>
+					<td><input size="26" type="text" name="username" required></td>
+				</tr>
+				<!-- Password -->
+				<tr>
+					<td>Password:</td>
+					<td><input size="26" type="password" name="password" required></td>
+				</tr>
+				<!-- Password Confirmation -->
+				<tr>
+					<td>Confirmation:</td>
+					<td><input size="26" type="password" name="confirmPassword" required></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center">
+						<hr>
+					</td>
+				</tr>
+				<!-- Full Name -->
+				<tr>
+					<td>Full Name:</td>
+					<td><input size="26" type="text" name="fullname" required></td>
+				</tr>
+				<!-- Gender -->
+				<tr style="vertical-align:top">
+					<td>Gender:</td>
+					<td>
+						<input type="radio" name="gender" value="male">Male<br>
+						<input type="radio" name="gender" value="female">Female
+					</td>
+				</tr>
+				<!-- Foreign Languages -->
+				<tr style="vertical-align:top">
+					<td>Foreign Languages:</td>
+					<td>
+						<input type="checkbox" name="languages[]" value="English">English<br>
+						<input type="checkbox" name="languages[]" value="German">German<br>
+						<input type="checkbox" name="languages[]" value="French">French<br>
+						<input type="checkbox" name="languages[]" value="Spanish">Spanish<br>
+						<input type="checkbox" name="languages[]" value="Italian">Italian<br>
+					</td>
+				</tr>
+				<!-- Field of Activity -->
+				<tr>
+					<td>Field of Activity:</td>
+					<td>
+						<select name="fieldOfWork" required>
+							<option value="" disabled selected hidden></option>
+							<option value="0">Service</option>
+							<option value="1">Education</option>
+							<option value="2">Medicine</option>
+							<option value="3">Science</option>
+						</select>
+					</td>
+				</tr>
+				<!-- Email -->
+				<tr>
+					<td>Email:</td>
+					<td><input size="26" type="email" name="email" required></td>
+				</tr>
+				<!-- Additional Information -->
+				<tr style="vertical-align:top">
+					<td>Additional Information:</td>
+					<td>
+						<textarea name="additionalInfo" cols="20" rows="5"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center">
+						<!-- Submit and Reset Buttons -->
+						<input type="submit" value="Submit">
+						<input type="reset" value="Reset">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</body>
+
+</html>
