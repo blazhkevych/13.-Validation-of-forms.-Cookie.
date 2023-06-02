@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Form Elements</title>
 	<style>
+		/* Styling for the page */
 		body {
 			font: 10pt Tahoma;
 		}
@@ -24,6 +25,7 @@
 	<script>
 		// Function to validate the form data
 		function validateForm() {
+			// Retrieving form input values
 			var username = document.forms["form1"]["username"].value;
 			var password = document.forms["form1"]["password"].value;
 			var confirmPassword = document.forms["form1"]["confirmPassword"].value;
@@ -49,27 +51,32 @@
 				return false;
 			}
 
-			// Store form data in cookies
-			document.cookie = "username=" + username;
-			document.cookie = "password=" + password;
-			document.cookie = "fullname=" + document.forms["form1"]["fullname"].value;
-			document.cookie = "gender=" + document.querySelector('input[name="gender"]:checked').value;
+			// Store form data in cookies with expiration date
+			var expirationDate = new Date();
+			expirationDate.setDate(expirationDate.getDate() + 30); // Set expiration to 30 days from now
+
+			// Store form values in cookies
+			document.cookie = "username=" + username + "; expires=" + expirationDate.toUTCString();
+			document.cookie = "password=" + password + "; expires=" + expirationDate.toUTCString();
+			document.cookie = "fullname=" + document.forms["form1"]["fullname"].value + "; expires=" + expirationDate.toUTCString();
+			document.cookie = "gender=" + document.querySelector('input[name="gender"]:checked').value + "; expires=" + expirationDate.toUTCString();
 
 			var languages = document.querySelectorAll('input[name="languages[]"]:checked');
 			var languagesValues = Array.from(languages).map(function (checkbox) {
 				return checkbox.value;
 			});
-			document.cookie = "languages=" + languagesValues.join(",");
+			document.cookie = "languages=" + languagesValues.join(",") + "; expires=" + expirationDate.toUTCString();
 
-			document.cookie = "fieldOfWork=" + document.forms["form1"]["fieldOfWork"].value;
-			document.cookie = "email=" + document.forms["form1"]["email"].value;
-			document.cookie = "additionalInfo=" + document.forms["form1"]["additionalInfo"].value;
+			document.cookie = "fieldOfWork=" + document.forms["form1"]["fieldOfWork"].value + "; expires=" + expirationDate.toUTCString();
+			document.cookie = "email=" + document.forms["form1"]["email"].value + "; expires=" + expirationDate.toUTCString();
+			document.cookie = "additionalInfo=" + document.forms["form1"]["additionalInfo"].value + "; expires=" + expirationDate.toUTCString();
 
 			return true;
 		}
 
 		// Function to populate form with data from cookie on page load
 		function populateForm() {
+			// Retrieve and process the stored cookies
 			var cookies = document.cookie.split(";");
 
 			for (var i = 0; i < cookies.length; i++) {
@@ -77,6 +84,7 @@
 				var name = cookie[0];
 				var value = cookie[1];
 
+				// Populate form fields based on cookie values
 				if (name === "username") {
 					document.forms["form1"]["username"].value = value;
 				} else if (name === "password") {
@@ -126,11 +134,6 @@
 				<tr>
 					<td>Confirmation:</td>
 					<td><input size="26" type="password" name="confirmPassword" required></td>
-				</tr>
-				<tr>
-					<td colspan="2" align="center">
-						<hr>
-					</td>
 				</tr>
 				<!-- Full Name -->
 				<tr>
